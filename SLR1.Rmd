@@ -1,0 +1,85 @@
+---
+title: " Regresión Lineal Simple SLR1"
+author: "Santiago Sanchez Varela"
+date: "2024-11-02"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Descripción
+
+Este ejercicio tiene como objetivo revisar el uso de R para generar un modelo de regresión lineal y comprender los principales conceptos que se desprenden del modelamiento.
+
+## Caso
+
+Para este ejemplo se utilizará como fuente de información la librería ISLR2 que contiene el data set Boston. Éste contiene 506 observaciones de censos realizados. Se busca predecir medv (median house value) utilizando alguno de los 12 predictores restantes. Para este ejercicio se utilizará lstat (percent of households with low socioeconomic status). Para lo anterior se usará la función de R lm(). La sintáxis básica es lm(y \~ x, data), donde y es la respuesta, x es el predictor, y data es el conjunto de datos donde se mentienen las dos variables.
+
+Esto se puede presentar de la siguiente manera:
+
+$Y \approx \beta_{0} + \beta_{1}X$
+
+Por lo tanto, en función de nuestras variables debiese expresarse así:
+
+$medv \approx \beta_{0} + \beta_{1}lstat$
+
+
+```{r Carga}
+library(MASS)
+library(ISLR2)
+head(Boston)
+attach(Boston)
+```
+## Gráfico medv/lstat
+
+A continuación se puede observar como se presentan los datos asociados a las dos variables mecionadas en el caso
+
+```{r Grafico}
+plot(lstat, medv, pch = 4, col = "blue", cex = 0.5, main = "Relación entre lstat y medv")
+```
+
+Para obtener el modelo se aplicará la función lm()
+
+
+
+```{r Modelo}
+lm.fit <- lm(medv ~ lstat)
+lm.fit
+summary(lm.fit)
+```
+```{r Modelo2}
+names(lm.fit)
+coef(lm.fit)
+confint(lm.fit)
+```
+## Determinación de Betas
+
+La aplicación de la función lm() da como resultados contar con los siguientes resultados
+
+$\beta_{0} = 34.5538409$
+$\beta_{1} = -0.9500494$
+
+Por lo tanto el modelo se puede observar en el siguiente gráfico:
+
+
+```{r Modelo3}
+plot(lstat, medv, pch = 4, col = "blue", cex = 0.5, main = "Relación entre lstat y medv")
+abline(lm.fit, lwd = 1, col = "red")
+predict(lm.fit, data.frame(lstat = (c(5, 10, 15))), interval = "confidence")
+predict(lm.fit, data.frame(lstat = (c(5, 10, 15))), interval = "prediction")
+plot(lstat, medv)
+abline(lm.fit)     
+```
+
+```{r Modelo4}
+par(mfrow = c(2,2))
+plot(lm.fit)
+plot(predict(lm.fit), residuals(lm.fit))
+plot(predict(lm.fit), rstudent(lm.fit))
+plot(hatvalues(lm.fit))
+which.max(hatvalues(lm.fit))
+```
